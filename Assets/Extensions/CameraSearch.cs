@@ -5,7 +5,7 @@ using UnityEngine;
 /// Calculate the Area where the camera can see
 /// Currently only works on YPlane Interceptions
 /// </summary>
-public static class CameraExtensions
+public static partial class CameraExtensions
 {
     public static(Vector3 pos, float size) CalculateSearchSize(this Camera cam, float searchDistance = 10000)
     {
@@ -79,16 +79,16 @@ public static class CameraExtensions
                     brPoint = bottomRightRay.GetPoint(brhit);
                 }
             }
-            float topwidth = Mathf.Abs(tlPoint.x - trPoint.x);
-            float botwidth = Mathf.Abs(blPoint.x - brPoint.x);
-            float leftheight = Mathf.Abs(blPoint.z - tlPoint.z);
-            float rightheight = Mathf.Abs(brPoint.z - trPoint.z);
 
-            Vector3 target = isbot ? blPoint : tlPoint;
-            Vector3 offset = isbot ? new Vector3(botwidth / 2, 0, leftheight / 2) : new Vector3(topwidth, 0, -leftheight / 2);
+            Vector2[] points = new Vector2[4];
+            points[0] = new Vector2(tlPoint.x, tlPoint.z);
+            points[1] = new Vector2(trPoint.x, trPoint.z);
+            points[2] = new Vector2(blPoint.x, blPoint.z);
+            points[3] = new Vector2(brPoint.x, brPoint.z);
+            Rect r = new Rect(tlPoint, Vector2.zero).Encapsulate(points);
 
-            pos = target + offset;
-            size = Mathf.Max(Mathf.Max(topwidth, botwidth), 0, Mathf.Max(leftheight, rightheight));
+            pos = new Vector3(r.center.x, 0, r.center.y);
+            size = Mathf.Max(r.size.x,r.size.y);
         }
 
         return (pos, size);
@@ -166,16 +166,16 @@ public static class CameraExtensions
                     brPoint = bottomRightRay.GetPoint(brhit);
                 }
             }
-            float topwidth = Mathf.Abs(tlPoint.x - trPoint.x);
-            float botwidth = Mathf.Abs(blPoint.x - brPoint.x);
-            float leftheight = Mathf.Abs(blPoint.z - tlPoint.z);
-            float rightheight = Mathf.Abs(brPoint.z - trPoint.z);
 
-            Vector3 target = isbot ? blPoint : tlPoint;
-            Vector3 offset = isbot ? new Vector3(botwidth / 2, 0, leftheight / 2) : new Vector3(topwidth, 0, -leftheight / 2);
+            Vector2[] points = new Vector2[4];
+            points[0] = new Vector2(tlPoint.x, tlPoint.z);
+            points[1] = new Vector2(trPoint.x, trPoint.z);
+            points[2] = new Vector2(blPoint.x, blPoint.z);
+            points[3] = new Vector2(brPoint.x, brPoint.z);
+            Rect r = new Rect(tlPoint, Vector2.zero).Encapsulate(points);
 
-            pos = target + offset;
-            size = new Vector3(Mathf.Max(topwidth, botwidth), 0, Mathf.Max(leftheight, rightheight));
+            pos = new Vector3(r.center.x,0,r.center.y);
+            size = new Vector3(r.size.x,0,r.size.y);
         }
 
         return (pos, size);
